@@ -3,11 +3,11 @@ let modInfo = {
 	id: "TQT",
 	author: "ArkSayCode",
 	pointsName: "thoughts",
-	modFiles: ["layers.js", "tree.js"],
+	modFiles: ["Layers/q.js", "tree.js"],
 
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
+	initialStartPoints: new Decimal (0), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
 
@@ -17,9 +17,12 @@ let VERSION = {
 	name: "The Beggining of Consciousness",
 }
 
-let changelog = `<h1>Changelog:</h1><br>
+let changelog = 
+`<h1>Changelog:</h1><br>
 	<h3>v0.1</h3><br>
-		- ???.<br>`
+		- Questions.<br>
+	<h3>v0.0</h3><br>
+		- ???<br>`
 
 let winText = `Congratulations! You have reached the end and beaten this game, or have you???`
 
@@ -42,6 +45,10 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	if (hasUpgrade('q', 11)) gain = gain.times(2)
+	if (hasUpgrade('q', 12)) gain = gain.times(upgradeEffect('q', 12))
+	if (hasUpgrade('q', 21)) gain = gain.times(upgradeEffect('q', 21))
+	if (hasUpgrade('q', 22)) gain = gain.times(upgradeEffect('q', 22))
 	return gain
 }
 
@@ -76,3 +83,4 @@ function maxTickLength() {
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
 }
+

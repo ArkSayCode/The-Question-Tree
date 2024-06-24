@@ -189,7 +189,6 @@ function doReset(layer, force=false) {
 
 		if (layers[layer].onPrestige)
 			run(layers[layer].onPrestige, layers[layer], gain)
-		
 		addPoints(layer, gain)
 		updateMilestones(layer)
 		updateAchievements(layer)
