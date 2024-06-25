@@ -2,6 +2,7 @@ addLayer("q", {
     name: "Questions", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "?", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    branches: ["a"],
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
@@ -19,14 +20,18 @@ addLayer("q", {
             description: "double?",
             cost: new Decimal(1),
             unlocked() { return player[this.layer].unlocked },
+            onPurchase() { makeParticles(questionMark, 12) },
         },
         12: {
             title: "where?",
             description: "the more you ask the more you think",
             cost: new Decimal(2),
             unlocked() { return (hasUpgrade(this.layer, 11))},
+            onPurchase() { makeParticles(questionMark, 12) },
             effect() {
-                return player[this.layer].points.add(1).pow(0.5)
+                let eff = player[this.layer].points.add(1).log(2).add(1)
+                
+                return eff
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect   
         },
@@ -35,9 +40,9 @@ addLayer("q", {
             description: "the more you think the more you ask",
             cost: new Decimal(10),
             unlocked() { return (hasUpgrade(this.layer, 12))},
+            onPurchase() { makeParticles(questionMark, 12) },
             effect() {
-                let eff = player.points.add(1).pow(0.2)
-                softcap(eff,3,0.5)
+                let eff = player.points.add(1).pow(0.15)
                 return eff
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
@@ -47,6 +52,7 @@ addLayer("q", {
             description: "the more you think the more you think",
             cost: new Decimal(25),
             unlocked() { return (hasUpgrade(this.layer, 13))},
+            onPurchase() { makeParticles(questionMark, 12) },
             effect() {
                 return player.points.add(1).pow(0.25)
             },
@@ -57,21 +63,26 @@ addLayer("q", {
             description: "bought upgrades increase thoughts",
             cost: new Decimal(100),
             unlocked() { return (hasUpgrade(this.layer, 21))},
+            onPurchase() { makeParticles(questionMark, 12) },
             effect() {
-                return new Decimal(1.5).pow(player.q.upgrades.length)
+                return new Decimal(1.4).pow(player.q.upgrades.length)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
         },
         31: {
             title: "how?",
-            description: "unlocks a new subtab",
+            description: "unlocks a new layer",
             cost: new Decimal(1000),
             unlocked() { return (hasUpgrade(this.layer, 22))},
+            onPurchase() { makeParticles(questionMark, 12) },
         },
     },
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         if (hasUpgrade('q', 13)) mult = mult.times(upgradeEffect('q', 13))
+        let aeff = tmp.a.effect.questionNerf
+        if (inChallenge("a", 11)) aeff = Decimal.pow(aeff,2)
+        mult = mult.mul(Decimal.pow(aeff,-1))
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -82,7 +93,7 @@ addLayer("q", {
         {key: "q", description: "Q: Reset for Questions?", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     tabFormat: {
-        "main tab": {
+        "Questions": {
             buttonStyle() {return  {'color': 'purple'}},
             shouldNotify: true,
             content:
@@ -92,28 +103,9 @@ addLayer("q", {
             glowColor: "blue",
 
         },
-        "answers": {
-            prestigeNotify: true,
-            style() {return  {'background-color': '#222222'}},
-            buttonStyle() {return {'border-color': 'orange'}},
-//            unlocked() {return (hasUpgrade(player.q, 31))},
-            content:[ 
-                "buyables", "blank",
-                ["row", [
-                    ["column", [
-                        ["prestige-button", "", {'width': '150px', 'height': '80px'}],
-                        ["prestige-button", "", {'width': '100px', 'height': '150px'}],
-                    ]], 
-                ], {'width': '600px', 'height': '350px', 'background-color': 'green', 'border-style': 'solid'}],
-                "blank",],
-        },
-        
     },
 
-    doReset(resettingLayer){ // Triggers when this layer is being reset, along with the layer doing the resetting. Not triggered by lower layers resetting, but is by layers on the same row.
-        makeParticles(questionMark,12) 
-        if(layers[resettingLayer].row > this.row) layerDataReset(this.layer, ["points"])
-    },
+    
 
     layerShown(){return true}
 })
@@ -122,9 +114,9 @@ const questionMark = {
     image: "",
     spread: 360/12,
     gravity: 0,
-    time: 5,
+    time: 2,
     speed: 10,
     text: function() { return "<h1 style='color:purple'> ?"},
-    offset: -300,
+    offset: 0,
     fadeInTime: 2,
 }

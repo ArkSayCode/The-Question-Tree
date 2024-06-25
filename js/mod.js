@@ -3,7 +3,7 @@ let modInfo = {
 	id: "TQT",
 	author: "ArkSayCode",
 	pointsName: "thoughts",
-	modFiles: ["Layers/q.js", "tree.js"],
+	modFiles: ["Layers/q.js", "Layers/a.js", "tree.js"],
 
 	discordName: "",
 	discordLink: "",
@@ -13,14 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1",
+	num: "0.2",
 	name: "The Beggining of Consciousness",
 }
 
 let changelog = 
 `<h1>Changelog:</h1><br>
+	<h3>v0.2</h3><br>
+		- Answers!<br>
 	<h3>v0.1</h3><br>
-		- Questions.<br>
+		- Questions?<br>
 	<h3>v0.0</h3><br>
 		- ???<br>`
 
@@ -49,6 +51,8 @@ function getPointGen() {
 	if (hasUpgrade('q', 12)) gain = gain.times(upgradeEffect('q', 12))
 	if (hasUpgrade('q', 21)) gain = gain.times(upgradeEffect('q', 21))
 	if (hasUpgrade('q', 22)) gain = gain.times(upgradeEffect('q', 22))
+	gain = gain.mul(tmp.a.effect.thoughtBoost)
+	//gain = gain.times(100) // for testing purposes only
 	return gain
 }
 
