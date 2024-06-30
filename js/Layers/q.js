@@ -2,7 +2,7 @@ addLayer("q", {
     name: "Questions", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "?", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
-    branches: ["a"],
+    branches: ["a", "e"],
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
@@ -14,22 +14,23 @@ addLayer("q", {
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 0.6, // Prestige currency exponent
+    roundUpCost: true,
     upgrades: {
         11: {
             title: "what?",
-            description: "double?",
+            description: "double your thought gain",
             cost: new Decimal(1),
             unlocked() { return player[this.layer].unlocked },
-            onPurchase() { makeParticles(questionMark, 12) },
+
         },
         12: {
             title: "where?",
             description: "the more you ask the more you think",
             cost: new Decimal(2),
             unlocked() { return (hasUpgrade(this.layer, 11))},
-            onPurchase() { makeParticles(questionMark, 12) },
+
             effect() {
-                let eff = player[this.layer].points.add(1).log(2).add(1)
+                let eff = player[this.layer].points.add(1).log(2).pow(1.5).add(1)
                 
                 return eff
             },
@@ -40,9 +41,9 @@ addLayer("q", {
             description: "the more you think the more you ask",
             cost: new Decimal(10),
             unlocked() { return (hasUpgrade(this.layer, 12))},
-            onPurchase() { makeParticles(questionMark, 12) },
+
             effect() {
-                let eff = player.points.add(1).pow(0.15)
+                let eff = player.points.max(1).pow(0.15)
                 return eff
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
@@ -52,9 +53,9 @@ addLayer("q", {
             description: "the more you think the more you think",
             cost: new Decimal(25),
             unlocked() { return (hasUpgrade(this.layer, 13))},
-            onPurchase() { makeParticles(questionMark, 12) },
+
             effect() {
-                return player.points.add(1).pow(0.25)
+                return player.points.max(1).pow(0.25)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
         },
@@ -63,26 +64,30 @@ addLayer("q", {
             description: "bought upgrades increase thoughts",
             cost: new Decimal(100),
             unlocked() { return (hasUpgrade(this.layer, 21))},
-            onPurchase() { makeParticles(questionMark, 12) },
+
             effect() {
-                return new Decimal(1.4).pow(player.q.upgrades.length)
+                return Decimal.pow(1.4, player.q.upgrades.length)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
         },
-        31: {
+        23: {
             title: "how?",
-            description: "unlocks a new layer",
+            description: "the more you ask the more you ask",
             cost: new Decimal(1000),
             unlocked() { return (hasUpgrade(this.layer, 22))},
-            onPurchase() { makeParticles(questionMark, 12) },
+
+            effect() {
+                let eff = player[this.layer].points.add(1).log(10).pow(0.2).add(1)
+                
+                return eff
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
         },
     },
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         if (hasUpgrade('q', 13)) mult = mult.times(upgradeEffect('q', 13))
-        let aeff = tmp.a.effect.questionNerf
-        if (inChallenge("a", 11)) aeff = Decimal.pow(aeff,2)
-        mult = mult.mul(Decimal.pow(aeff,-1))
+        mult = mult.div(tmp.a.effect.questionNerf)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -98,25 +103,22 @@ addLayer("q", {
             shouldNotify: true,
             content:
                 ["main-display",
-                "prestige-button", "resource-display",
-                ["blank", "5px"], "h-line", "upgrades"],
+                "prestige-button", ["blank",20],
+                "upgrades", ],
             glowColor: "blue",
 
         },
     },
 
-    
+    doReset(resettingLayer) {
+        if (layers[resettingLayer].row <= this.row) return;
+
+        let keep = [];
+        if (hasMilestone("e", 0)) keep.push("upgrades");
+
+        layerDataReset(this.layer, keep);
+    },
 
     layerShown(){return true}
 })
 
-const questionMark = {
-    image: "",
-    spread: 360/12,
-    gravity: 0,
-    time: 2,
-    speed: 10,
-    text: function() { return "<h1 style='color:purple'> ?"},
-    offset: 0,
-    fadeInTime: 2,
-}

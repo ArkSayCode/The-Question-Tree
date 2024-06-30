@@ -21,6 +21,8 @@ addLayer("a", {
         thoughtBoost: (Decimal.pow(5, player[this.layer].points)),
         questionNerf: (Decimal.pow(1.5, player[this.layer].points)),
         }
+        if (inChallenge("a", 11)) eff.questionNerf = Decimal.pow(eff.questionNerf,2)
+        if (hasChallenge("a", 11)) eff.thoughtBoost = Decimal.pow(eff.thoughtBoost,2)
         return eff    
     },
     effectDescription() { // Optional text to describe the effects
@@ -31,17 +33,17 @@ addLayer("a", {
         0: {
             requirementDescription: "2 Answers",
             effectDescription: "Unlock a challenge",
-            done() { return player.a.points.gte(2) },
+            done() { return player[this.layer].points.gte(2) }
         },
     },
     challenges: {
         11: {
-            name: "1 step forward 2 steps back",
+            name: `1 step forward<br>2 steps back`,
             challengeDescription: "do a row 2 reset | Answer's question nerf is squared",
-            goalDescription: "get x thoughts",
+            goalDescription: "get 12,500 questions",
             rewardDescription: "Answer's thought buff is squared",
             unlocked() {return hasMilestone(this.layer, 0)},
-            canComplete: function() {return player.points.gte(100)},
+            canComplete: function() {return player["q"].points.gte(12500)},
             onEnter() {doReset("a")},
         },
     },
@@ -62,23 +64,12 @@ addLayer("a", {
             shouldNotify: true,
             content:
                 ["main-display",
-                "prestige-button", "resource-display",
-                ["blank", "5px"], "h-line", "milestones", "challenge"],
+                "prestige-button", ["blank",20],
+                "milestones", "challenges"],
             glowColor: "blue",
 
         },
     },
 
-    layerShown(){return hasUpgrade("q", 31) || player[this.layer].unlocked}
+    layerShown(){return player["q"].unlocked || player[this.layer].unlocked}
 })
-
-const exclamationMark = {
-    image: "",
-    spread: 360/12,
-    gravity: 0,
-    time: 2,
-    speed: 10,
-    text: function() { return "<h1 style='color:yellow'> !"},
-    offset: 0,
-    fadeInTime: 2,
-}

@@ -22,6 +22,7 @@ var colors = {
 		background: "#001f3f",
 		background_tooltip: "rgba(0, 15, 31, 0.75)",
 	},
+
 }
 function changeTheme() {
 

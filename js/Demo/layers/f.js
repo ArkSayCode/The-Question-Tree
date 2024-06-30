@@ -25,7 +25,7 @@ addLayer("f", {
     base: 3,
     roundUpCost: true,
     canBuyMax() {return false},
-    //directMult() {return new Decimal(player.c.otherThingy)},
+    directMult() {return new Decimal(player.c.otherThingy)},
 
     row: 1,
     layerShown() {return true}, 

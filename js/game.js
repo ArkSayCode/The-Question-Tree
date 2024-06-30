@@ -380,6 +380,9 @@ function gameLoop(diff) {
 		if (layers[layer].achievements) updateAchievements(layer)
 	}
 
+	lastTenTicks.push(diff)
+	if (lastTenTicks.length > 10) lastTenTicks = lastTenTicks.slice(1,)
+
 }
 
 function hardReset(resetOptions) {
@@ -389,7 +392,7 @@ function hardReset(resetOptions) {
 	save(true);
 	window.location.reload();
 }
-
+var lastTenTicks = []
 var ticking = false
 
 var interval = setInterval(function() {
