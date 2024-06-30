@@ -82,7 +82,7 @@ addLayer("e", {
                     Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " Enigma Generators"
             },
             effect(x) {
-                let eff = player.e.generatorTotals[1].mul(Decimal.pow(2,x.div(10).floor()))
+                let eff = player.e.generatorTotals[1].mul(Decimal.pow(2,x.div(10).floor())).add(1)
                 eff = eff.mul(tmp["e"].buyables[22].effect.boost)
                 return eff
             },
@@ -103,7 +103,7 @@ addLayer("e", {
                     Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " Enigma Generators 2.0"
             },
             effect(x) {
-                let eff = x.pow(1.5)
+                let eff = getBuyableAmount(this.layer, this.id).pow(1.5)
                 eff = eff.mul(tmp["e"].buyables[23].effect.boost)
                 return eff
             },
@@ -148,7 +148,7 @@ addLayer("e", {
                     <br>Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " Enigma Generators^2"
             },
             effect(x) {
-                let gen = player.e.generatorTotals[3].mul(Decimal.pow(2,x.div(10).floor()))
+                let gen = player.e.generatorTotals[3].mul(Decimal.pow(2,x.div(10).floor())).add(1)
                 gen.mul(tmp["e"].buyables[32].effect.boost)
                 let boost = player.e.generatorTotals[3].pow(0.75).mul(Decimal.pow(2,x.div(10).floor())).add(1)
                 boost.mul(tmp["e"].buyables[32].effect.boost)
@@ -178,9 +178,9 @@ addLayer("e", {
                     <br>Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " Enigma Generators 2.0^2"
             },
             effect(x) {
-                let gen = x.pow(1.2)
+                let gen = getBuyableAmount(this.layer, this.id).pow(1.2)
                 gen.mul(tmp["e"].buyables[33].effect.boost)
-                let boost = x.mul(2).pow(0.8)
+                let boost = getBuyableAmount(this.layer, this.id).mul(2).pow(0.8)
                 boost.mul(tmp["e"].buyables[33].effect.boost)
                 return {
                     gen,
@@ -231,7 +231,7 @@ addLayer("e", {
             },
             effect(x) {
                 return {
-                    gen: player.e.generatorTotals[5].mul(Decimal.pow(2,x.div(10).floor())),
+                    gen: player.e.generatorTotals[5].mul(Decimal.pow(2,x.div(10).floor())).add(1),
                     boost: player.e.generatorTotals[5].pow(0.75).mul(Decimal.pow(2,x.div(10).floor())).add(1)
                 }
             },
@@ -257,8 +257,8 @@ addLayer("e", {
             },
             effect(x) {
                 return {
-                    gen: x.pow(1.2),
-                    boost: x.mul(2).pow(0.8),
+                    gen: getBuyableAmount(this.layer, this.id).pow(1.2),
+                    boost: getBuyableAmount(this.layer, this.id).mul(2).pow(0.8),
                 }
             },
             canAfford() { return player.e.generatorTotals[5].gte(this.cost()) },
