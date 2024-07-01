@@ -24,26 +24,26 @@ let changelog =
 	<h2>The Beginning of Consciousness:</h2>
 <br>
 <br>
-	<h3>v0.3:</h3>
+	<h3>v0.0.3:</h3>
 <br>
 <br>
 	- Enigmas.
 <br>
 <br>
-	<h3>v0.2:</h3>
+	<h3>v0.0.2:</h3>
 <br>
 <br>
 	- Answers!<br>
 	- Achievements.
 <br>
 <br>
-	<h3>v0.1:</h3>
+	<h3>v0.0.1:</h3>
 <br>
 <br>
 	- Questions?
 <br>
 <br>
-	<h3>v0.0:</h3>
+	<h3>v0.0.0:</h3>
 <br>
 <br>
 	- ???`
@@ -124,7 +124,7 @@ function getUndulatingColor(period = Math.sqrt(760)){
 var displayThings = [
     function(){
         let x = getUndulatingColor()
-		let a = "Current endgame: "+colorText("h2", x,format(addedPlayerData().endgame))+" thoughts (v0.3)"
+		let a = "Current endgame: "+colorText("h2", x,format(addedPlayerData().endgame))+" thoughts (v0.0.3)"
         
 		return "<br>" + a + (options.autosave ? "" : ". <br>Warning: autosave is off")
 	},
@@ -162,7 +162,6 @@ function backgroundStyle() {
 
 	return{
 	background,
-	
 	}
 }
 

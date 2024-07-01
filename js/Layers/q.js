@@ -14,7 +14,6 @@ addLayer("q", {
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 0.6, // Prestige currency exponent
-    roundUpCost: true,
     upgrades: {
         11: {
             title: "what?",
@@ -77,7 +76,7 @@ addLayer("q", {
             unlocked() { return (hasUpgrade(this.layer, 22))},
 
             effect() {
-                let eff = player[this.layer].points.add(1).log(10).pow(0.2).add(1)
+                let eff = player[this.layer].points.add(1).log(10).pow(0.5).add(1)
                 
                 return eff
             },
@@ -114,7 +113,7 @@ addLayer("q", {
         if (layers[resettingLayer].row <= this.row) return;
 
         let keep = [];
-        if (hasMilestone("e", 0)) keep.push("upgrades");
+        if (hasMilestone("e", 0) && resettingLayer == "e") keep.push("upgrades");
 
         layerDataReset(this.layer, keep);
     },

@@ -22,7 +22,9 @@ addLayer("a", {
         questionNerf: (Decimal.pow(1.5, player[this.layer].points)),
         }
         if (inChallenge("a", 11)) eff.questionNerf = Decimal.pow(eff.questionNerf,2)
+        if (inChallenge("a", 12)) eff.thoughtBoost = Decimal.pow(eff.thoughtBoost,0.1)
         if (hasChallenge("a", 11)) eff.thoughtBoost = Decimal.pow(eff.thoughtBoost,2)
+        if (hasChallenge("a", 12)) eff.questionNerf = eff.questionNerf.div(2)
         return eff    
     },
     effectDescription() { // Optional text to describe the effects
@@ -35,6 +37,12 @@ addLayer("a", {
             effectDescription: "Unlock a challenge",
             done() { return player[this.layer].points.gte(2) }
         },
+        1: {
+            requirementDescription: "3 Answers",
+            effectDescription: "Unlock yet another challenge",
+            done() { return player[this.layer].points.gte(3) },
+            unlocked() { return hasMilestone(this.layer, 0) }
+        },
     },
     challenges: {
         11: {
@@ -43,6 +51,15 @@ addLayer("a", {
             goalDescription: "get 12,500 questions",
             rewardDescription: "Answer's thought buff is squared",
             unlocked() {return hasMilestone(this.layer, 0)},
+            canComplete: function() {return player["q"].points.gte(12500)},
+            onEnter() {doReset("a")},
+        },
+        12: {
+            name: `2 steps forward<br>googol steps back`,
+            challengeDescription: "do a row 2 reset | Answer's thought boost is raised to the 1/10 power",
+            goalDescription: "get 12,500 questions",
+            rewardDescription: "Answer's question nerf is halved",
+            unlocked() {return hasMilestone(this.layer, 1)},
             canComplete: function() {return player["q"].points.gte(12500)},
             onEnter() {doReset("a")},
         },

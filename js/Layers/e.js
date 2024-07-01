@@ -16,19 +16,19 @@ addLayer("e", {
         ]
     }},
     color: "blue",
-    requires: new Decimal(25000000), // Can be a function that takes requirement increases into account
+    requires: new Decimal(2.5e8), // Can be a function that takes requirement increases into account
     resource: "Enigmas", // Name of prestige currency
     baseResource: "Questions", // Name of resource prestige is based on
     baseAmount() {return player.q.points}, // Get the current amount of baseResource
     exponent: new Decimal(0.4),
     type: "normal",
     effect(){ return {
-        thoughtBoost: player.e.EPoints.add(1).log(5).pow(1.2).add(1),
+        thoughtBoost: player.e.EPoints.add(1).log(5).pow(1.25).add(1),
     }},
     milestones: {
         0: {
             requirementDescription: "Buy 10 Enigma Generators",
-            effectDescription: "Keep question upgrades on all resets",
+            effectDescription: "Keep question upgrades on enigma resets",
             done() { return getBuyableAmount("e", 11).gte(10) }
         },
         1: {
@@ -54,7 +54,7 @@ addLayer("e", {
         11: {
             cost(x) { return Decimal.pow(4,Decimal.pow(x.div(10).floor().add(1),0.8).sub(1)).floor() },
             title() {
-                return format(player.e.generatorTotals[0], 0) + " (" + format(getBuyableAmount(this.layer, this.id), 0) + ")<br/>Enigma Generators"
+                return format(player.e.generatorTotals[0], 0) + " (" + format(getBuyableAmount(this.layer, this.id), 0) + ")<br/>Enigma Generators 1.0"
             },
             display() {
                 return "<br>which are producing " + format(tmp[this.layer].buyables[this.id].effect) + " Enigma Points per second.\n\
@@ -63,6 +63,7 @@ addLayer("e", {
             effect(x) {
                 let eff = player.e.generatorTotals[0].mul(Decimal.pow(2,x.div(10).floor()))
                 eff = eff.mul(tmp["e"].buyables[21].effect)
+                if (hasUpgrade('e', 11)) eff = eff.mul(upgradeEffect('e', 11))
                 return eff
             },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
@@ -78,12 +79,13 @@ addLayer("e", {
                 return format(player.e.generatorTotals[1], 0) + " (" + format(getBuyableAmount(this.layer, this.id), 0) + ")<br/>Enigma Generators 2.0"
             },
             display() {
-                return "<br>which are producing " + format(tmp[this.layer].buyables[this.id].effect) + " Enigma Generators per second.\n\
-                    Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " Enigma Generators"
+                return "<br>which are producing " + format(tmp[this.layer].buyables[this.id].effect) + " Enigma Generators 1.0 per second.\n\
+                    Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " Enigma Generators 1.0"
             },
             effect(x) {
                 let eff = player.e.generatorTotals[1].mul(Decimal.pow(2,x.div(10).floor()))
                 eff = eff.mul(tmp["e"].buyables[22].effect.boost)
+                if (hasUpgrade('e', 11)) eff = eff.mul(upgradeEffect('e', 11))
                 return eff
             },
             canAfford() { return player.e.generatorTotals[0].gte(this.cost()) },
@@ -105,6 +107,7 @@ addLayer("e", {
             effect(x) {
                 let eff = getBuyableAmount(this.layer, this.id).pow(1.5)
                 eff = eff.mul(tmp["e"].buyables[23].effect.boost)
+                if (hasUpgrade('e', 11)) eff = eff.mul(upgradeEffect('e', 11))
                 return eff
             },
             canAfford() { return player.e.generatorTotals[1].gte(this.cost()) },
@@ -116,15 +119,16 @@ addLayer("e", {
         21: {
             cost(x) { return Decimal.pow(25,x.div(10).floor().mul(4).add(1)) },
             title() {
-                return format(player.e.generatorTotals[2], 0) + " (" + format(getBuyableAmount(this.layer, this.id), 0) + ")<br/>Enigma Generators^2"
+                return format(player.e.generatorTotals[2], 0) + " (" + format(getBuyableAmount(this.layer, this.id), 0) + ")<br/>Enigma Generators 1.0^2"
             },
             display() {
-                return "<br>which are giving a " + format(tmp[this.layer].buyables[this.id].effect) + "x boost to Enigma Generators effect.\n\
-                    Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " Enigma Generators"
+                return "<br>which are giving a " + format(tmp[this.layer].buyables[this.id].effect) + "x boost to Enigma Generators 1.0 effect.\n\
+                    Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " Enigma Generators 1.0"
             },
             effect(x) {
                 let eff = player.e.generatorTotals[2].pow(0.75).mul(Decimal.pow(2,x.div(10).floor())).add(1)
                 eff.mul(tmp["e"].buyables[31].effect.boost)
+                if (hasUpgrade('e', 11)) eff = eff.mul(upgradeEffect('e', 11))
                 return eff
             },
             canAfford() { return player.e.generatorTotals[0].gte(this.cost()) },
@@ -143,15 +147,17 @@ addLayer("e", {
                 return format(player.e.generatorTotals[3], 0) + " (" + format(getBuyableAmount(this.layer, this.id), 0) + ")<br/>Enigma Generators 2.0^2"
             },
             display() {
-                return "<br>which are producing " + format(tmp[this.layer].buyables[this.id].effect.gen) + " Enigma Generators 2.0^2 per second.\n\
+                return "<br>which are producing " + format(tmp[this.layer].buyables[this.id].effect.gen) + " Enigma Generators 1.0^2 per second.\n\
                     and are giving a " + format(tmp[this.layer].buyables[this.id].effect.boost) + "x boost to Enigma Generators 2.0 effect.\n\
-                    <br>Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " Enigma Generators^2"
+                    <br>Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " Enigma Generators 1.0^2"
             },
             effect(x) {
                 let gen = player.e.generatorTotals[3].mul(Decimal.pow(2,x.div(10).floor()))
                 gen.mul(tmp["e"].buyables[32].effect.boost)
+                if (hasUpgrade('e', 11)) gen = gen.mul(upgradeEffect('e', 11))
                 let boost = player.e.generatorTotals[3].pow(0.75).mul(Decimal.pow(2,x.div(10).floor())).add(1)
                 boost.mul(tmp["e"].buyables[32].effect.boost)
+                if (hasUpgrade('e', 11)) boost = boost.mul(upgradeEffect('e', 11))
                 return {
                     gen,
                     boost 
@@ -180,8 +186,10 @@ addLayer("e", {
             effect(x) {
                 let gen = getBuyableAmount(this.layer, this.id).pow(1.2)
                 gen.mul(tmp["e"].buyables[33].effect.boost)
+                if (hasUpgrade('e', 11)) gen = gen.mul(upgradeEffect('e', 11))
                 let boost = getBuyableAmount(this.layer, this.id).mul(2).pow(0.8).add(1)
                 boost.mul(tmp["e"].buyables[33].effect.boost)
+                if (hasUpgrade('e', 11)) boost = boost.mul(upgradeEffect('e', 11))
                 return {
                     gen,
                     boost,
@@ -200,18 +208,20 @@ addLayer("e", {
         31: {
             cost(x) { return Decimal.pow(25,x.div(10).floor().mul(4).add(1)) },
             title() {
-                return format(player.e.generatorTotals[4], 0) + " (" + format(getBuyableAmount(this.layer, this.id), 0) + ")<br/>Enigma Generators^3"
+                return format(player.e.generatorTotals[4], 0) + " (" + format(getBuyableAmount(this.layer, this.id), 0) + ")<br/>Enigma Generators 1.0^3"
             },
             display() {
-                return "<br>which are giving a " + format(tmp[this.layer].buyables[this.id].effect) + "x boost to Enigma Generators^2 effect.\n\
-                    Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " Enigma Generators^2"
+                return "<br>which are giving a " + format(tmp[this.layer].buyables[this.id].effect) + "x boost to Enigma Generators 1.0^2 effect.\n\
+                    Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " Enigma Generators 1.0^2"
             },
             effect(x) {
-                return player.e.generatorTotals[4].pow(0.75).mul(Decimal.pow(2,x.div(10).floor())).add(1)
+                let eff = player.e.generatorTotals[4].pow(0.75).mul(Decimal.pow(2,x.div(10).floor())).add(1)
+                if (hasUpgrade('e', 11)) eff = eff.mul(upgradeEffect('e', 11))
+                return eff
             },
-            canAfford() { return player.e.generatorTotals[3].gte(this.cost()) },
+            canAfford() { return player.e.generatorTotals[2].gte(this.cost()) },
             buy() {
-                player.e.generatorTotals[3] = player.e.generatorTotals[3].sub(this.cost())
+                player.e.generatorTotals[2] = player.e.generatorTotals[2].sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
                 player.e.generatorTotals[4] = player.e.generatorTotals[4].add(1)
             },
@@ -225,14 +235,18 @@ addLayer("e", {
                 return format(player.e.generatorTotals[5], 0) + " (" + format(getBuyableAmount(this.layer, this.id), 0) + ")<br/>Enigma Generators 2.0^3"
             },
             display() {
-                return "<br>which are producing " + format(tmp[this.layer].buyables[this.id].effect.gen) + " Enigma Generators^3 per second.\n\
+                return "<br>which are producing " + format(tmp[this.layer].buyables[this.id].effect.gen) + " Enigma Generators 1.0^3 per second.\n\
                     and are giving a " + format(tmp[this.layer].buyables[this.id].effect.boost) + "x boost to Enigma Generators 2.0^2 effect.\n\
-                    <br>Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " Enigma Generators^3"
+                    <br>Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " Enigma Generators 1.0^3"
             },
             effect(x) {
+                let gen = player.e.generatorTotals[5].mul(Decimal.pow(2,x.div(10).floor()))
+                if (hasUpgrade('e', 11)) gen = gen.mul(upgradeEffect('e', 11))
+                let boost = player.e.generatorTotals[5].pow(0.75).mul(Decimal.pow(2,x.div(10).floor())).add(1)
+                if (hasUpgrade('e', 11)) boost = boost.mul(upgradeEffect('e', 11))
                 return {
-                    gen: player.e.generatorTotals[5].mul(Decimal.pow(2,x.div(10).floor())),
-                    boost: player.e.generatorTotals[5].pow(0.75).mul(Decimal.pow(2,x.div(10).floor())).add(1)
+                    gen,
+                    boost,
                 }
             },
             canAfford() { return player.e.generatorTotals[4].gte(this.cost()) },
@@ -256,9 +270,13 @@ addLayer("e", {
                     <br>Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " Enigma Generators 2.0^3"
             },
             effect(x) {
+                let gen = getBuyableAmount(this.layer, this.id).pow(1.2)
+                if (hasUpgrade('e', 11)) gen = gen.mul(upgradeEffect('e', 11))
+                let boost = getBuyableAmount(this.layer, this.id).mul(2).pow(0.8).add(1)
+                if (hasUpgrade('e', 11)) boost = boost.mul(upgradeEffect('e', 11))
                 return {
-                    gen: getBuyableAmount(this.layer, this.id).pow(1.2),
-                    boost: getBuyableAmount(this.layer, this.id).mul(2).pow(0.8).add(1),
+                    gen,
+                    boost,
                 }
             },
             canAfford() { return player.e.generatorTotals[5].gte(this.cost()) },
@@ -270,6 +288,68 @@ addLayer("e", {
                 return hasMilestone(this.layer,3)
             },
             
+        },
+    },
+    upgrades: {
+        11: {
+            title: "Better Gens",
+            description: "Enigma Gens are better based on Enigma points",
+            cost: new Decimal(100),
+            unlocked() { return player.e.generatorTotals[0].gte("5e9")},
+            effect() {
+                let eff = player.e.EPoints.max(1).log(10).pow(0.40).add(1)
+                if (hasUpgrade('e', 12)) eff = eff.mul(upgradeEffect('e', 12))
+                return eff
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect  
+        },
+        12: {
+            title: "Better Gens 2.0",
+            description: "Better Gens is better based on Enigmas",
+            cost: new Decimal(250),
+            unlocked() { return hasUpgrade(this.layer,11)},
+            effect() {
+                let eff = player[this.layer].points.pow(0.2).add(1)
+                if (hasUpgrade('e', 13)) eff = eff.mul(upgradeEffect('e', 13))
+                return eff
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect  
+        },
+        13: {
+            title: "Better Gens 3.0",
+            description: "Better Gens 2.0 is better based on Answers",
+            cost: new Decimal(500),
+            unlocked() { return hasUpgrade(this.layer,12)},
+            effect() {
+                let eff = player.a.points.pow(1.5).add(1)
+                if (hasUpgrade('e', 14)) eff = eff.mul(upgradeEffect('e', 14))
+                return eff
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect  
+        },
+        14: {
+            title: "Better Gens 4.0",
+            description: "Better Gens 3.0 is better based on Questions",
+            cost: new Decimal(1000),
+            unlocked() { return hasUpgrade(this.layer,13)},
+            effect() {
+                let eff = player.q.points.pow(1.5).max(1).log(10).add(1)
+                
+                return eff
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect  
+        },
+        21: {
+            title: "Better Enigma Points",
+            description: "Enigma Point's effect's formula is boosted",
+            cost: new Decimal("1e50"),
+            unlocked() { return hasUpgrade(this.layer,13)},
+            effect() {
+                let eff = player.q.points.pow(1.5).max(1).log(10).add(1)
+                
+                return eff
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect  
         },
     },
     directMult() {
@@ -284,17 +364,28 @@ addLayer("e", {
         {key: "e", description: "E: Reset for Enigmas.", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     tabFormat: {
-        "Enigma": {
+        "Buyables": {
             buttonStyle() {return  {'color': 'blue'}},
             shouldNotify: true,
             content:
                 ["main-display",
                 "prestige-button", ["blank",20], ["display-text", function() {
                 return 'You have ' + colorText("h3", "blue",format(player.e.EPoints)) + ' Enigma Points,<h5>which boost thoughts gain by '+format(tmp.e.effect.thoughtBoost)+'x</h5>'}],
-                ["blank",20], "milestones", 
+                ["blank",20], "milestones",
                 ["row", [["buyable", 11], ["buyable", 12], ["buyable", 13]]],
                 ["row", [["buyable", 21], ["buyable", 22], ["buyable", 23]]],
-                ["row", [["buyable", 31], ["buyable", 32], ["buyable", 33]]],
+                ["row", [["buyable", 31], ["buyable", 32], ["buyable", 33]]], 
+                ],
+            glowColor: "blue",
+        },
+        "Upgrades": {
+            buttonStyle() {return  {'color': 'blue'}},
+            shouldNotify: true,
+            content:
+                ["main-display",
+                "prestige-button", ["blank",20], ["display-text", function() {
+                return 'You have ' + colorText("h3", "blue",format(player.e.EPoints)) + ' Enigma Points,<h5>which boost thoughts gain by '+format(tmp.e.effect.thoughtBoost)+'x</h5>'}],
+                ["blank",20], "milestones", "upgrades"
                 ],
             glowColor: "blue",
         },
@@ -304,10 +395,10 @@ addLayer("e", {
         let Emult = new Decimal(1)
         player.e.EPoints = player.e.EPoints.add(buyableEffect(this.layer,11).mul(diff).mul(Emult))
         let mult = new Decimal(1)
-        player.e.generatorTotals[0] = player.e.generatorTotals[0].add(tmp.e.buyables[12].effect.mul(diff))
-        player.e.generatorTotals[1] = player.e.generatorTotals[1].add(tmp.e.buyables[13].effect.mul(diff))
-        player.e.generatorTotals[2] = player.e.generatorTotals[2].add(tmp.e.buyables[22].effect.gen.mul(diff))
-        player.e.generatorTotals[3] = player.e.generatorTotals[3].add(tmp.e.buyables[23].effect.gen.mul(diff))
+        player.e.generatorTotals[0] = player.e.generatorTotals[0].add(tmp.e.buyables[12].effect.mul(diff).mul(mult))
+        player.e.generatorTotals[1] = player.e.generatorTotals[1].add(tmp.e.buyables[13].effect.mul(diff).mul(mult))
+        player.e.generatorTotals[2] = player.e.generatorTotals[2].add(tmp.e.buyables[22].effect.gen.mul(diff).mul(mult))
+        player.e.generatorTotals[3] = player.e.generatorTotals[3].add(tmp.e.buyables[23].effect.gen.mul(diff).mul(mult))
         player.e.generatorTotals[4] = player.e.generatorTotals[4].add(tmp.e.buyables[32].effect.gen.mul(diff).mul(mult))
         player.e.generatorTotals[5] = player.e.generatorTotals[5].add(tmp.e.buyables[33].effect.gen.mul(diff).mul(mult))
 
