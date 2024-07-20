@@ -108,12 +108,11 @@ addLayer("q", {
 
         },
     },
-
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return;
 
         let keep = [];
-        if (hasMilestone("e", 0) && resettingLayer == "e") keep.push("upgrades");
+        if (hasMilestone("e", 0) && resettingLayer == "e" && !inChallenge("a", 22)) keep.push("upgrades");
 
         layerDataReset(this.layer, keep);
     },

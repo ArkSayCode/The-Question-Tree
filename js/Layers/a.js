@@ -21,8 +21,8 @@ addLayer("a", {
         thoughtBoost: (Decimal.pow(5, player[this.layer].points)),
         questionNerf: (Decimal.pow(1.5, player[this.layer].points)),
         }
-        if (inChallenge("a", 11)) eff.questionNerf = Decimal.pow(eff.questionNerf,2)
-        if (inChallenge("a", 12)) eff.thoughtBoost = Decimal.pow(eff.thoughtBoost,0.1)
+        if (inChallenge("a", 11) || inChallenge("a", 21)) eff.questionNerf = Decimal.pow(eff.questionNerf,2)
+        if (inChallenge("a", 12) || inChallenge("a", 21)) eff.thoughtBoost = Decimal.pow(eff.thoughtBoost,0.1)
         if (hasChallenge("a", 11)) eff.thoughtBoost = Decimal.pow(eff.thoughtBoost,2)
         if (hasChallenge("a", 12)) eff.questionNerf = eff.questionNerf.div(2)
         return eff    
@@ -39,15 +39,27 @@ addLayer("a", {
         },
         1: {
             requirementDescription: "3 Answers",
-            effectDescription: "Unlock yet another challenge",
+            effectDescription: "Unlock another challenge",
             done() { return player[this.layer].points.gte(3) },
             unlocked() { return hasMilestone(this.layer, 0) }
+        },
+        2: {
+            requirementDescription: "5 Answers",
+            effectDescription: "Unlock yet another challenge",
+            done() { return player[this.layer].points.gte(5) },
+            unlocked() { return hasMilestone(this.layer, 1) }
+        },
+        3: {
+            requirementDescription: "8 Answers",
+            effectDescription: "yet ANOTHER one",
+            done() { return player[this.layer].points.gte(8) },
+            unlocked() { return hasMilestone(this.layer, 2) }
         },
     },
     challenges: {
         11: {
             name: `1 step forward<br>2 steps back`,
-            challengeDescription: "do a row 2 reset | Answer's question nerf is squared",
+            challengeDescription: "do a answer reset | Answer's question nerf is squared",
             goalDescription: "get 12,500 questions",
             rewardDescription: "Answer's thought buff is squared",
             unlocked() {return hasMilestone(this.layer, 0)},
@@ -55,17 +67,37 @@ addLayer("a", {
             onEnter() {doReset("a")},
         },
         12: {
-            name: `2 steps forward<br>googol steps back`,
-            challengeDescription: "do a row 2 reset | Answer's thought boost is raised to the 1/10 power",
+            name: `1 steps forward<br>googol steps back`,
+            challengeDescription: "do a answer reset | Answer's thought boost is raised to the 1/10 power",
             goalDescription: "get 12,500 questions",
             rewardDescription: "Answer's question nerf is halved",
             unlocked() {return hasMilestone(this.layer, 1)},
             canComplete: function() {return player["q"].points.gte(12500)},
             onEnter() {doReset("a")},
         },
+        21: {
+            name: `1 step forward<br>2 googol steps back<br>1!1!!!!!111!1!!`,
+            challengeDescription: "do a answer reset | The first 2 answer challenges are combined",
+            goalDescription: "get 1e9 questions",
+            rewardDescription: "All gens 3.0 are 10x cheaper",
+            unlocked() {return hasMilestone(this.layer, 2)},
+            canComplete: function() {return player["q"].points.gte(1e9)},
+            onEnter() {doReset("a")},
+        },
+        22: {
+            name: `these names are <br>getting repetitive`,
+            challengeDescription: "do a answer reset | The first 2 answer challenges are combined but enigmas don't exist",
+            goalDescription: "get 1e15 questions",
+            rewardDescription: "All Enigma upgrades's effects are multiplied by the number of answers",
+            unlocked() {return hasMilestone(this.layer, 3)},
+            canComplete: function() {return player["q"].points.gte(1e15)},
+            onEnter() {doReset("a")},
+        },
     },
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+        if (hasUpgrade('e', 31) && !inChallenge("a", 22)) mult = mult.div(upgradeEffect('e', 31 ))
+        mult = mult.div(tmp.i.effect.answerCost)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses

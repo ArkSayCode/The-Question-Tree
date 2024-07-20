@@ -3,7 +3,7 @@ let modInfo = {
 	id: "TQT",
 	author: "ArkSayCode",
 	pointsName: "thoughts",
-	modFiles: ["Layers/q.js", "Layers/a.js", "Layers/e.js", "Layers/ac.js", "tree.js"],
+	modFiles: ["Layers/q.js", "Layers/a.js", "Layers/e.js", "Layers/i.js", "Layers/t.js", "Layers/p.js", "Layers/o.js", "Layers/ac.js", "tree.js"],
 
 	discordName: "ArkTopia (does not talk about my games)",
 	discordLink: "https://discord.gg/tqDzpZebdb",
@@ -13,40 +13,55 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0.3",
+	num: "0.0.4",
 	name: "The Beginning of Consciousness",
 }
 
-let changelog = 
-`	<h1>Changelog:</h1>
+let changelog =`	
+<h1>Changelog:</h1>
 <br>
 <br>
 	<h2>The Beginning of Consciousness:</h2>
 <br>
 <br>
+	<h3>v0.0.5:</h3>
+<br>
+<br>
+	<h3 style="color:`+getUndulatingColor(5)+`";>- Added Ω Questions</h3>
+<br>
+<br>
+	<h3>v0.0.4:</h3>
+<br>
+<br>
+	- Added Intellegence.<br>
+	- Added Philosophy.<br>
+	- Added Theories.
+<br>
+<br>
 	<h3>v0.0.3:</h3>
 <br>
 <br>
-	- Enigmas.
+	- Added Enigmas.
 <br>
 <br>
 	<h3>v0.0.2:</h3>
 <br>
 <br>
-	- Answers!<br>
-	- Achievements.
+	- Added Answers!<br>
+	- Added Achievements.
 <br>
 <br>
 	<h3>v0.0.1:</h3>
 <br>
 <br>
-	- Questions?
+	- Added Questions?
 <br>
 <br>
 	<h3>v0.0.0:</h3>
 <br>
 <br>
 	- ???`
+
 
 let winText = `Congratulations! You have reached the end and beaten this game, or have you?`
 
@@ -74,8 +89,8 @@ function getPointGen() {
 	if (hasUpgrade('q', 21)) gain = gain.times(upgradeEffect('q', 21))
 	if (hasUpgrade('q', 22)) gain = gain.times(upgradeEffect('q', 22))
 	gain = gain.mul(tmp.a.effect.thoughtBoost)
-	gain = gain.mul(tmp.e.effect.thoughtBoost)
-	//gain = gain.times(100) // for testing purposes only
+	if (!inChallenge("a", 22)) gain = gain.mul(tmp.e.effect.thoughtBoost)
+	//gain = gain.times(10000) // for testing purposes only
 	return gain
 }
 
@@ -124,9 +139,8 @@ function getUndulatingColor(period = Math.sqrt(760)){
 var displayThings = [
     function(){
         let x = getUndulatingColor()
-		let a = "Current endgame: "+colorText("h2", x,format(addedPlayerData().endgame))+" thoughts (v0.0.3)"
         
-		return "<br>" + a + (options.autosave ? "" : ". <br>Warning: autosave is off")
+		return "<br>" + "Current endgame: "+colorText("h2", x,format(addedPlayerData().endgame))+" thoughts (v0.0.3)"
 	},
 	function(){
 		let c = 0
@@ -140,7 +154,7 @@ var displayThings = [
 		for (lys in LAYERS) {
 			if (player[LAYERS[lys]] !== undefined && (!player[LAYERS[lys]].unlocked || (!tmp[LAYERS[lys]].layerShown))) rem++
 		}
-		return `<h5 style='margin-top:5px;opacity:0.5'><i>(${rem + " layers remaining"})</i></h5>`
+		return `<h5 style='margin-top:5px;opacity:0.5'><i>(${rem + " layers remaining"})</i></h5>` + (options.autosave ? "" : "<br>" + colorText("h2", "red","Warning: Autosave is off"))
 	},
 ]
 

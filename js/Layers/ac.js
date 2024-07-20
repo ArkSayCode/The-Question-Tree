@@ -29,7 +29,7 @@ addLayer("ac", {
         13: {
             name: "ohhh",
             done() {return player["a"].unlocked},
-            tooltip: "get an answer - No reward",
+            tooltip: "unlock answers - No reward",
             onComplete() {player[this.layer].points = player[this.layer].points.add(1)},
         },
         14: {
@@ -39,9 +39,27 @@ addLayer("ac", {
             onComplete() {player[this.layer].points = player[this.layer].points.add(1)},
         },
         15: {
+            name: "that was challenging",
+            done() {return hasChallenge("a", 12)},
+            tooltip: 'finish "1 step forward googol steps back" - No reward',
+            onComplete() {player[this.layer].points = player[this.layer].points.add(1)},
+        },
+        16: {
             name: "what is this",
             done() {return player["e"].unlocked},
-            tooltip: 'get an enigma - No reward',
+            tooltip: 'unlock enigmas - No reward',
+            onComplete() {player[this.layer].points = player[this.layer].points.add(1)},
+        },
+        21: {
+            name: "Too Many!!!",
+            done() {return hasMilestone("e",3)},
+            tooltip: 'Unlock all enigma buyables - No reward',
+            onComplete() {player[this.layer].points = player[this.layer].points.add(1)},
+        },
+        22: {
+            name: "Smart",
+            done() {return player["i"].unlocked},
+            tooltip: 'Unlock intellegence - No reward',
             onComplete() {player[this.layer].points = player[this.layer].points.add(1)},
         },
     },
