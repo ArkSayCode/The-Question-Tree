@@ -9,7 +9,7 @@ addLayer("q", {
     }},
     color: "purple",
     requires: new Decimal(10), // Can be a function that takes requirement increases into account
-    resource: "Questions", // Name of prestige currency
+    resource: "Question Points", // Name of prestige currency
     baseResource: "thoughts", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
@@ -94,7 +94,7 @@ addLayer("q", {
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "q", description: "Q: Reset for Questions?", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "q", description: "Q: Reset for Question Points?", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     tabFormat: {
         "Questions": {

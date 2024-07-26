@@ -6,9 +6,6 @@ addLayer("i", {
     startData() { return {
         unlocked: false,
 		points: new Decimal(0),
-        ideas: new Decimal(0),
-        ideaP: new Decimal(0),
-        requiredIP: new Decimal(10),
     }},
     color: "orange",
     requires: new Decimal(9), // Can be a function that takes requirement increases into account
@@ -20,32 +17,6 @@ addLayer("i", {
     roundUpCost: true,
     canBuyMax: false,
     type: "static",
-    effect() {
-        eff = {
-        ideaGain: (Decimal.pow(5, player[this.layer].points).sub(4).max(0)),
-        answerCost: Decimal.pow(10, player.i.ideas),
-        }
-        return eff    
-    },
-    effectDescription() { // Optional text to describe the effects
-        eff = this.effect();
-        return "which are producing "+format(eff.ideaGain)+" idea points per second"
-    },
-    bars: {
-        ideabar: {
-            direction: RIGHT,
-            width: 200,
-            height: 50,
-            progress() { return player.i.ideaP.div(player.i.requiredIP) },
-            display() { return "Currently: "+format(player.i.ideaP)+"/"+format(player.i.requiredIP) },
-            fillStyle: {'background-color' : "orange"},
-            baseStyle: {'background-color' : "#696969"},
-            textStyle: {
-                'color': 'blue',
-                'text-shadow': '0px 0px 2px #FFFFFF'
-            },
-        },
-    },
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
 
@@ -73,16 +44,6 @@ addLayer("i", {
         },
     },
 
-    update(diff) {
-        let ipMult = new Decimal(1)
-        player.i.ideaP = player.i.ideaP.add(tmp.i.effect.ideaGain.mul(diff).mul(ipMult))
-        if (tmp.i.bars.ideabar.progress.gte(1)){
-            player.i.ideas.add(1)
-            player.i.ideaP = new Decimal(0)
-            player.i.requiredIP = player.i.requiredIP.mul(10)
-        }
-    },
-
-    layerShown(){return player["e"].unlocked || player[this.layer].unlocked}
+    layerShown(){return player["t"].unlocked || player[this.layer].unlocked}
 })
 

@@ -8,8 +8,8 @@ addLayer("a", {
     }},
     color: "yellow",
     requires: new Decimal(2500), // Can be a function that takes requirement increases into account
-    resource: "Answers", // Name of prestige currency
-    baseResource: "Questions", // Name of resource prestige is based on
+    resource: "Answer", // Name of prestige currency
+    baseResource: "Question Points", // Name of resource prestige is based on
     baseAmount() {return player.q.points}, // Get the current amount of baseResource
     base: new Decimal(5),
     exponent: new Decimal(2),
@@ -97,7 +97,7 @@ addLayer("a", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         if (hasUpgrade('e', 31) && !inChallenge("a", 22)) mult = mult.div(upgradeEffect('e', 31 ))
-        mult = mult.div(tmp.i.effect.answerCost)
+        mult = mult.div(tmp.t.effect.answerCost)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses

@@ -1,15 +1,15 @@
-addLayer("p", {
-    name: "Philosophy", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "P", // This appears on the layer's node. Default is the id with the first letter capitalized
+addLayer("m", {
+    name: "Mysteries", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "M", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     branches: ["a","e"],
     startData() { return {
         unlocked: false,
 		points: new Decimal(0),
     }},
-    color: "pink",
+    color: "hot pink",
     requires: new Decimal(1e100), // Can be a function that takes requirement increases into account
-    resource: "Philosophy", // Name of prestige currency
+    resource: "Mysteries", // Name of prestige currency
     baseResource: "Enigmas", // Name of resource prestige is based on
     baseAmount() {return player.e.points}, // Get the current amount of baseResource
     base: new Decimal(7),
@@ -31,8 +31,8 @@ addLayer("p", {
         {key: "p", description: "P: Reset for Philosophy.", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     tabFormat: {
-        "Philosophy": {
-            buttonStyle() {return  {'color': 'pink'}},
+        "Mysteries": {
+            buttonStyle() {return  {'color': 'hot pink'}},
             shouldNotify: true,
             content:
                 ["main-display",
@@ -43,6 +43,6 @@ addLayer("p", {
         },
     },
 
-    layerShown(){return player["i"].unlocked || player[this.layer].unlocked}
+    layerShown(){return player["t"].unlocked || player[this.layer].unlocked}
 })
 

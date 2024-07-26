@@ -57,9 +57,9 @@ addLayer("ac", {
             onComplete() {player[this.layer].points = player[this.layer].points.add(1)},
         },
         22: {
-            name: "Smart",
-            done() {return player["i"].unlocked},
-            tooltip: 'Unlock intellegence - No reward',
+            name: "But remember that's just a theory, a game theory",
+            done() {return player["t"].unlocked},
+            tooltip: 'Unlock theories - No reward',
             onComplete() {player[this.layer].points = player[this.layer].points.add(1)},
         },
     },

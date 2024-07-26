@@ -3,7 +3,7 @@ let modInfo = {
 	id: "TQT",
 	author: "ArkSayCode",
 	pointsName: "thoughts",
-	modFiles: ["Layers/q.js", "Layers/a.js", "Layers/e.js", "Layers/i.js", "Layers/t.js", "Layers/p.js", "Layers/o.js", "Layers/ac.js", "tree.js"],
+	modFiles: ["Layers/q.js", "Layers/a.js", "Layers/e.js", "Layers/i.js", "Layers/t.js", "Layers/m.js", "Layers/o.js", "Layers/ac.js", "tree.js"],
 
 	discordName: "ArkTopia (does not talk about my games)",
 	discordLink: "https://discord.gg/tqDzpZebdb",
@@ -27,15 +27,15 @@ let changelog =`
 	<h3>v0.0.5:</h3>
 <br>
 <br>
-	<h3 style="color:`+getUndulatingColor(5)+`";>- Added Ω Questions</h3>
+	- Added Philosophy
 <br>
 <br>
 	<h3>v0.0.4:</h3>
 <br>
 <br>
+	- Added Theories.<br>
 	- Added Intellegence.<br>
-	- Added Philosophy.<br>
-	- Added Theories.
+	- Added Mysteries.
 <br>
 <br>
 	<h3>v0.0.3:</h3>
@@ -97,7 +97,8 @@ function getPointGen() {
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { 
 	return {
-		endgame: new Decimal(1e100)
+		endgame: new Decimal(1100),
+		treeState: "dev",
 	}
 }
 
@@ -124,15 +125,22 @@ function convertToB16(n){
     return codes[(n-x)/16] + codes[x]
 }
 
-function getUndulatingColor(period = Math.sqrt(760)){
+function getUndulatingColor(period = Math.sqrt(760), off = 0){
 	let t = new Date().getTime()
-	let a = Math.sin(t / 1e3 / period * 2 * Math.PI + 0)
-	let b = Math.sin(t / 1e3 / period * 2 * Math.PI + 2)
-	let c = Math.sin(t / 1e3 / period * 2 * Math.PI + 4)
+	let a = Math.sin(t / 1e3 / period * 2 * Math.PI + 4 + off)
+	let b = Math.sin(t / 1e3 / period * 2 * Math.PI + 2 + off)
+	let c = Math.sin(t / 1e3 / period * 2 * Math.PI + 0 + off)
 	a = convertToB16(Math.floor(a*128) + 128)
 	b = convertToB16(Math.floor(b*128) + 128)
 	c = convertToB16(Math.floor(c*128) + 128)
 	return "#"+String(a) + String(b) + String(c)
+}
+
+function getMonochromaticColor(period = Math.sqrt(760), value = 50, off = 0){
+	let t = new Date().getTime()
+	let x = sin(t/period+off)*value/2+value/2
+	a = convertToB16(x)
+	return "#"+String(x) + String(x) + String(x)
 }
 
 // Display extra things at the top of the page
@@ -147,7 +155,7 @@ var displayThings = [
 		for (i = 0; i<10; i++){
 			c += lastTenTicks[i] / 10000
 		}
-		return " Average TPS = " + format(c, 3) + "s/tick."
+		return "Average TPS = " + format(c, 3) + "s/tick."
 	},
 	function(){
 		var rem = 0
@@ -156,6 +164,9 @@ var displayThings = [
 		}
 		return `<h5 style='margin-top:5px;opacity:0.5'><i>(${rem + " layers remaining"})</i></h5>` + (options.autosave ? "" : "<br>" + colorText("h2", "red","Warning: Autosave is off"))
 	},
+	function(){
+		return "<br>" +format(addedPlayerData().treeState)
+	}
 ]
 
 // Determines when the game "ends"
@@ -169,14 +180,7 @@ function isEndgame() {
 
 // Style for the background, can be a function
 function backgroundStyle() {
-	let t = new Date().getTime()
-	let m = 50
-	let x = sin(t/20)*m/2+m/2
-	background = "rgba("+x+", "+x+", "+x+", 0.5)"
-
-	return{
-	background,
-	}
+	return getMonochromaticColor()
 }
 
 // You can change this if you have things that can be messed up by long tick lengths
